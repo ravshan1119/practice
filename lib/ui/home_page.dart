@@ -1,70 +1,90 @@
 import 'package:flutter/material.dart';
-import 'package:practice/data/model/user_model.dart';
+import 'package:practice/data/model/data_model.dart';
+import 'package:practice/data/model/person_model.dart';
 import 'package:practice/data/network/api_provider.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class PaginationDataScreen extends StatefulWidget {
+  const PaginationDataScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<PaginationDataScreen> createState() => _PaginationDataScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
-  bool loading = false;
-  late UserModel userModel;
+class _PaginationDataScreenState extends State<PaginationDataScreen> {
 
-  _getMyData() async {
+  int currentPage = 1;
+  int countOfPage = 5;
+  bool isLoading = false;
+
+  List<PersonModel> personModel = [];
+  DataModel? dataModel;
+
+  _fetchResult() async {
     setState(() {
-      loading = true;
+      isLoading = true;
     });
-    userModel = await ApiProvider.getData();
+    dataModel = await ApiProvider.getData(
+      page: currentPage,
+      size: countOfPage,
+    );
 
     setState(() {
-      loading = false;
+      isLoading = false;
     });
+
+    if (dataModel!.data.isNotEmpty) {
+      PersonModel newPersons = personModel as PersonModel;
+
+      setState(() {});
+    }
+    currentPage++;
   }
 
   @override
   void initState() {
-    _getMyData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: loading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                children: [
-                  Center(child: Text(userModel!.results.first.name.title)),
-                ],
-              ));
+      body: ListView(
+        children: [
+      ...List.generate(personModel.length, (index) {
+        return Container(
+          margin: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(16)),
+          width: double.infinity,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 50,
+                width: 100,
+                child:
+                    Image.network(personModel[index].airlineModel.logo),
+              ),
+              Text(personModel[index].name),
+              Text(personModel[index].person_id),
+              Text(
+                personModel[index].trips.toString(),
+                maxLines: 1,
+              ),
+              Text(personModel[index].airlineModel.website),
+            ],
+          ),
+        );
+      }),
+      Visibility(
+        visible: isLoading,
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+        ],
+      ),
+    );
   }
 }
-
-// FutureBuilder(
-// future: apiProvider.getUserInfo(),
-// builder:
-// (BuildContext context, AsyncSnapshot<UniversalData> snapshot) {
-// if (snapshot.connectionState == ConnectionState.waiting) {
-// return const Center(
-// child: CircularProgressIndicator(),
-// );
-// } else if (snapshot.hasData) {
-// if (snapshot.data!.error.isEmpty) {
-// UserModel userModel = snapshot.data!.data as UserModel;
-// return Column(
-// children: [
-// Text(userModel.resultsModel.gender),
-// ],
-// );
-// }
-// }
-// return Center(
-// child: Center(child: Text(snapshot.data!.error)),
-// );
-// })
