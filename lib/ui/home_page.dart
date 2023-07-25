@@ -11,14 +11,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool loading = false;
-  late UserModel userModel;
+   UserModel? userModel;
 
   _getMyData() async {
     setState(() {
       loading = true;
     });
     userModel = await ApiProvider.getData();
-
     setState(() {
       loading = false;
     });
@@ -40,31 +39,8 @@ class _HomePageState extends State<HomePage> {
               )
             : Column(
                 children: [
-                  Center(child: Text(userModel!.results.first.name.title)),
+                  Center(child: Text(userModel?.results[0].email??'')),
                 ],
               ));
   }
 }
-
-// FutureBuilder(
-// future: apiProvider.getUserInfo(),
-// builder:
-// (BuildContext context, AsyncSnapshot<UniversalData> snapshot) {
-// if (snapshot.connectionState == ConnectionState.waiting) {
-// return const Center(
-// child: CircularProgressIndicator(),
-// );
-// } else if (snapshot.hasData) {
-// if (snapshot.data!.error.isEmpty) {
-// UserModel userModel = snapshot.data!.data as UserModel;
-// return Column(
-// children: [
-// Text(userModel.resultsModel.gender),
-// ],
-// );
-// }
-// }
-// return Center(
-// child: Center(child: Text(snapshot.data!.error)),
-// );
-// })
