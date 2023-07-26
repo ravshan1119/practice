@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:practice/ui/home_page.dart';
+import 'package:practice/data/network/api_provider.dart';
+import 'package:practice/providers/user_provider.dart';
+import 'package:practice/ui/get_data_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(apiProvider: ApiProvider()),
+          lazy: true,
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -10,8 +23,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      home: HomePage(),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: GetDataScreen(),
     );
   }
 }
