@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:practice/data/model/user_model.dart';
-import 'package:practice/data/network/api_provider.dart';
+import 'package:practice/data/model/company_model.dart';
+import 'package:practice/data/model/universal_data.dart';
+import 'package:practice/data/network/api_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,61 +13,103 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool loading = false;
-  late UserModel userModel;
+  ApiService apiService = ApiService();
+  UniversalData? universalData;
+  CompanyModel? companyModel;
+  bool isLoading = false;
 
-  _getMyData() async {
+  fetchData() async {
     setState(() {
-      loading = true;
+      isLoading = true;
     });
-    userModel = await ApiProvider.getData();
-
+    companyModel = await apiService.getData();
     setState(() {
-      loading = false;
+      isLoading = false;
     });
   }
 
   @override
   void initState() {
-    _getMyData();
+    fetchData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: loading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
+      appBar: AppBar(
+        title: const Text("Company"),
+      ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
                 children: [
-                  Center(child: Text(userModel!.results.first.name.title)),
+                  Center(
+                    child: Text(
+                      companyModel!.carModel,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                          color: Colors.orange),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      companyModel!.description,
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  CarouselSlider(
+                      items: companyModel!.carPics.map((i) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              height: 300,
+                              width: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.orange
+                              ),
+                              child: Image.network(i.toString()),
+
+                              // Center(
+                              //   child: CachedNetworkImage(
+                              //     imageUrl: i.toString(),
+                              //     placeholder: (context, url) => const Center(
+                              //       child: CircularProgressIndicator(),
+                              //     ),
+                              //     errorWidget: (context, url, error) =>
+                              //     const Icon(Icons.error),
+                              //   ),
+                              // ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        height: 400,
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 0.8,
+                        initialPage: 0,
+                        enableInfiniteScroll: true,
+                        reverse: false,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 3),
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                        enlargeFactor: 0.3,
+                        scrollDirection: Axis.horizontal,
+                      ))
                 ],
-              ));
+              ),
+            ),
+    );
   }
 }
-
-// FutureBuilder(
-// future: apiProvider.getUserInfo(),
-// builder:
-// (BuildContext context, AsyncSnapshot<UniversalData> snapshot) {
-// if (snapshot.connectionState == ConnectionState.waiting) {
-// return const Center(
-// child: CircularProgressIndicator(),
-// );
-// } else if (snapshot.hasData) {
-// if (snapshot.data!.error.isEmpty) {
-// UserModel userModel = snapshot.data!.data as UserModel;
-// return Column(
-// children: [
-// Text(userModel.resultsModel.gender),
-// ],
-// );
-// }
-// }
-// return Center(
-// child: Center(child: Text(snapshot.data!.error)),
-// );
-// })

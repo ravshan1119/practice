@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:practice/ui/home_page.dart';
+import 'package:practice/ui/tab_box.dart';
+import 'package:practice/ui/test.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,8 +12,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      home: HomePage(),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: TabBox(),
     );
   }
 }
