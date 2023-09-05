@@ -153,12 +153,6 @@ class WordsPage extends StatelessWidget {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          wordsController.getWordsList("apple");
-        },
-        child: const Icon(Icons.get_app),
-      ),
     );
   }
 }
