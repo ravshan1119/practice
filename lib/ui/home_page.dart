@@ -1,70 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:practice/data/model/user_model.dart';
-import 'package:practice/data/network/api_provider.dart';
+import 'package:get/get.dart';
+import 'package:practice/data/getx_controllers/counter_controller.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  bool loading = false;
-  late UserModel userModel;
-
-  _getMyData() async {
-    setState(() {
-      loading = true;
-    });
-    userModel = await ApiProvider.getData();
-
-    setState(() {
-      loading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    _getMyData();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    CounterController controller = Get.put(CounterController());
+    print("Chizildi!");
     return Scaffold(
-        appBar: AppBar(),
-        body: loading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                children: [
-                  Center(child: Text(userModel!.results.first.name.title)),
-                ],
-              ));
+      appBar: AppBar(
+        title: const Text("Counter Screen GetX"),
+      ),
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            Obx(() => Text(controller.counter.toString())),
+          ],
+        ),
+      ),
+      floatingActionButton: Row(
+        children: [
+          FloatingActionButton(onPressed: () {
+            controller.increment();
+          }, child: const Icon(Icons.add),),
+          FloatingActionButton(onPressed: () {
+            controller.decrement();
+          }, child: const Icon(Icons.remove),),
+          FloatingActionButton(onPressed: () {
+            controller.reset();
+          }, child: const Icon(Icons.refresh),),
+        ],
+      ),
+    );
   }
 }
-
-// FutureBuilder(
-// future: apiProvider.getUserInfo(),
-// builder:
-// (BuildContext context, AsyncSnapshot<UniversalData> snapshot) {
-// if (snapshot.connectionState == ConnectionState.waiting) {
-// return const Center(
-// child: CircularProgressIndicator(),
-// );
-// } else if (snapshot.hasData) {
-// if (snapshot.data!.error.isEmpty) {
-// UserModel userModel = snapshot.data!.data as UserModel;
-// return Column(
-// children: [
-// Text(userModel.resultsModel.gender),
-// ],
-// );
-// }
-// }
-// return Center(
-// child: Center(child: Text(snapshot.data!.error)),
-// );
-// })
