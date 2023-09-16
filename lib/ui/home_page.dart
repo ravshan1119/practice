@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practice/ui/detail_page.dart';
+import 'package:practice/ui/widgets/global_button.dart';
 import 'package:practice/ui/widgets/product_container.dart';
 import 'package:practice/utils/colors.dart';
 import 'package:practice/utils/constants.dart';
