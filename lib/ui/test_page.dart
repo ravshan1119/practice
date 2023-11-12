@@ -70,9 +70,6 @@ class _TestScreenState extends State<TestScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(items: [],
-
-      ),
     );
   }
 }
