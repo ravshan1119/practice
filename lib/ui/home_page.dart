@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
         ),
         body: Stack(
           children: [
-            Column(
+            ListView(
               children: [
                 const SizedBox(height: 47),
                 Row(

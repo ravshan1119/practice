@@ -61,7 +61,6 @@ class _DetailPageState extends State<DetailPage> {
                     topRight: Radius.circular(50),
                     topLeft: Radius.circular(50)),
               ),
-              height: 500,
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
@@ -160,7 +159,7 @@ class _DetailPageState extends State<DetailPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 320),
+                  const SizedBox(height: 100),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -195,6 +194,7 @@ class _DetailPageState extends State<DetailPage> {
                       )
                     ],
                   ),
+                  const SizedBox(height: 50),
                 ],
               ),
             ),
